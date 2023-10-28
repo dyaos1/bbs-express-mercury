@@ -13,47 +13,57 @@ const data_list_comments = require('./MOCK_DATA_C.json')
 //     console.log(typeof(objecte))
 // })
 
-// const now = new Date()
-// console.log(now)
-// const formattedDate = now.toISOString().slice(0, 26).replace('T', ' ');
+const now = new Date()
+const formattedDate = now.toISOString().slice(0, 26).replace('T', ' ');
 // console.log(formattedDate)
 
 async function reset_tables() {
-    await pg.query(`DROP TABLE IF EXISTS article`);
+
     await pg.query(`DROP TABLE IF EXISTS comment`);
+    await pg.query(`DROP TABLE IF EXISTS article`);
     await pg.query(`CREATE TABLE article (
         id          SERIAL      PRIMARY KEY,
         title       VARCHAR(50) NOT NULL,
         body        TEXT        NOT NULL,
         author_id   INTEGER     NOT NULL,
-        created_at  TIMESTAMP   DEFAULT NOW,
-        updated_at  TIMESTAMP,
-    );`);
+        created_at  TIMESTAMP   DEFAULT NOW(),
+        updated_at  TIMESTAMP
+    )`);
     await pg.query(`CREATE TABLE comment (
         id          SERIAL      PRIMARY KEY,
         content     VARCHAR(200)    NOT NULL,
         article_id  INTEGER     NOT NULL,
-        created_at  TIMESTAMP   DEFAULT NOW,
+        created_at  TIMESTAMP   DEFAULT NOW(),
         updated_at  TIMESTAMP,
         FOREIGN KEY(article_id) REFERENCES article(id) ON DELETE CASCADE
-    );`);
+    )`);
 }
 
 async function insert_mocking_article() {
     data_list_articles.forEach(async (e) => {
-        const returned = await pg.any(e);
+        const returned = await pg.one(`INSERT INTO article 
+        (title, body, author_id)
+        VALUES ($<title>, $<body>, $<author_id>)
+        RETURNING id`, e);
         console.log(returned);
     });
 };
 
 async function insert_mocking_comment() {
     data_list_comments.forEach(async (e) => {
-        const returned = await pg.any(e);
+        const returned = await pg.one(`INSERT INTO comment 
+        (content, article_id)
+        VALUES ($<content>, $<article_id>)
+        RETURNING id`, e);
         console.log(returned);
     });
 };
 
-// reset_tables();
+async function main() {
+    await reset_tables();
 
-// insert_mocking_article();
-// insert_mocking_comment();
+    await insert_mocking_article();
+    await insert_mocking_comment();
+};
+
+main()
