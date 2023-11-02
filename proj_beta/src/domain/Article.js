@@ -1,14 +1,15 @@
+const { get_article_by_id } = require('../db/mysql/article-query');
 
-
-const comment = class {
-    constructor() {
+const Article = class {
+    constructor(title = null, body = null, author_id = 1) {
         this.id = null;
-        this.content = null;
-        this.article_id = null;
+        this.title = title;
+        this.body = body;
+        this.author_id = author_id;
 
         const now = new Date();
         const formattedDate = now.toISOString().slice(0, 26).replace('T', ' ')
-         
+        
         this.created_at = formattedDate;
         this.updated_at = formattedDate;
     };
@@ -17,8 +18,8 @@ const comment = class {
         this.id = id;
     };
 
-    setArticleID(article_id) {
-        this.article_id = article_id;
+    setAuthorID(author_id) {
+        this.author_id = author_id;
     };
 
     setUpdatedAt() {
@@ -27,21 +28,23 @@ const comment = class {
         this.updated_at = formattedDate;
     };
 
-    setComment(result) {
+    setArticle(result) {
         this.id = result.id;
-        this.content = result.content;
-        this.article_id = result.article_id;
+        this.title = result.title;
+        this.body = result.body;
+        this.author_id = result.author_id;
         this.created_at = result.created_at;
         this.updated_at = result.updated_at;
     }
 
     toJSON() {
         return {
-          id: this.id,
-          content: this.content,
-          article_id: this.article_id,
-          created_at: this.created_at,
-          updated_at: this.updated_at
+          "id": this.id,
+          "title": this.title,
+          "body": this.body,
+          "author_id": this.author_id,
+          "created_at": this.created_at,
+          "updated_at": this.updated_at
         };
       }
 
@@ -51,12 +54,14 @@ const comment = class {
     }
 
     //c
-    async create(content) {
-        this.content = content;
+    async create(title, body) {
+        this.title = title;
+        this.body = body;
         // this.setAuthorID();
-        const result = await insert_into_comment(
-            this.content, 
-            this.article_id,
+        const result = await insert_into_article(
+            this.title, 
+            this.body, 
+            this.author_id,
             this.created_at, 
             this.updated_at
         );
@@ -68,7 +73,7 @@ const comment = class {
 
     //r
     async get(id) {
-        const result = await select_comment_by_id(id);
+        const result = await get_article_by_id(id);
 
         this.setArticle(result);
 
@@ -76,12 +81,12 @@ const comment = class {
     };
 
     //u
-    async update(content) {
+    async update(title, body) {
         this.setUpdatedAt()
-        const result = await update_comment(content, this.updated_at);
+        const result = await insert_into_article(title, body, this.updated_at);
 
         this.setArticle(result);
-        return this.toJSON();
+        return result;
     };
 
     //d
@@ -89,10 +94,10 @@ const comment = class {
         if (this.id === null) {
             return false;
         }
-        const result = await delete_comment(this.id);
+        const result = await delete_article(this.id);
         return result;
     }
 };
 
 
-module.exports = comment;
+module.exports = Article;

@@ -1,15 +1,14 @@
 
 
-const article = class {
+const Comment = class {
     constructor() {
         this.id = null;
-        this.title = null;
-        this.body = null;
-        this.author_id = 1;
+        this.content = null;
+        this.article_id = null;
 
         const now = new Date();
         const formattedDate = now.toISOString().slice(0, 26).replace('T', ' ')
-        
+         
         this.created_at = formattedDate;
         this.updated_at = formattedDate;
     };
@@ -18,8 +17,8 @@ const article = class {
         this.id = id;
     };
 
-    setAuthorID(author_id) {
-        this.author_id = author_id;
+    setArticleID(article_id) {
+        this.article_id = article_id;
     };
 
     setUpdatedAt() {
@@ -28,11 +27,10 @@ const article = class {
         this.updated_at = formattedDate;
     };
 
-    setArticle(result) {
+    setComment(result) {
         this.id = result.id;
-        this.title = result.title;
-        this.body = result.body;
-        this.author_id = result.author_id;
+        this.content = result.content;
+        this.article_id = result.article_id;
         this.created_at = result.created_at;
         this.updated_at = result.updated_at;
     }
@@ -40,9 +38,8 @@ const article = class {
     toJSON() {
         return {
           id: this.id,
-          title: this.title,
-          body: this.body,
-          author_id: this.author_id,
+          content: this.content,
+          article_id: this.article_id,
           created_at: this.created_at,
           updated_at: this.updated_at
         };
@@ -54,14 +51,12 @@ const article = class {
     }
 
     //c
-    async create(title, body) {
-        this.title = title;
-        this.body = body;
+    async create(content) {
+        this.content = content;
         // this.setAuthorID();
-        const result = await insert_into_article(
-            this.title, 
-            this.body, 
-            this.author_id,
+        const result = await insert_into_comment(
+            this.content, 
+            this.article_id,
             this.created_at, 
             this.updated_at
         );
@@ -73,7 +68,7 @@ const article = class {
 
     //r
     async get(id) {
-        const result = await select_article_by_id(id);
+        const result = await select_comment_by_id(id);
 
         this.setArticle(result);
 
@@ -81,12 +76,12 @@ const article = class {
     };
 
     //u
-    async update(title, body) {
+    async update(content) {
         this.setUpdatedAt()
-        const result = await insert_into_article(title, body, this.updated_at);
+        const result = await update_comment(content, this.updated_at);
 
         this.setArticle(result);
-        return result;
+        return this.toJSON();
     };
 
     //d
@@ -94,10 +89,10 @@ const article = class {
         if (this.id === null) {
             return false;
         }
-        const result = await delete_article(this.id);
+        const result = await delete_comment(this.id);
         return result;
     }
 };
 
 
-module.exports = article;
+module.exports = Comment;
