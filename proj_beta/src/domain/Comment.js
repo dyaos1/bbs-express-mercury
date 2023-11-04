@@ -1,4 +1,4 @@
-
+const { insert_into_comment, get_comment_by_id, update_comment, delete_comment } = require('../db/mysql/comment-query')
 
 const Comment = class {
     constructor() {
@@ -7,7 +7,7 @@ const Comment = class {
         this.article_id = null;
 
         const now = new Date();
-        const formattedDate = now.toISOString().slice(0, 26).replace('T', ' ')
+        const formattedDate = now.toISOString().slice(0, 22).replace('T', ' ')
          
         this.created_at = formattedDate;
         this.updated_at = formattedDate;
@@ -51,8 +51,9 @@ const Comment = class {
     }
 
     //c
-    async create(content) {
+    async create(content, article_id) {
         this.content = content;
+        this.article_id = article_id;
         // this.setAuthorID();
         const result = await insert_into_comment(
             this.content, 
@@ -61,18 +62,22 @@ const Comment = class {
             this.updated_at
         );
 
-        this.setID = Number(result.id);
+        this.setID(Number(result));
 
         return this.toJSON();
     };
 
     //r
     async get(id) {
-        const result = await select_comment_by_id(id);
+        const [result] = await get_comment_by_id(id);
 
-        this.setArticle(result);
+        if (result === undefined) {
+            return null;
+        }
 
-        return this.toJSON();
+        this.setComment(result);
+        
+        return this;
     };
 
     //u
@@ -90,6 +95,7 @@ const Comment = class {
             return false;
         }
         const result = await delete_comment(this.id);
+        console.log(result)
         return result;
     }
 };

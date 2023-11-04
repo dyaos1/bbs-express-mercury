@@ -68,10 +68,6 @@ async function main() {
         )`)
     console.log(result4)
 
-    makeClose();
-    }
-
-async function mock() {
     console.log('article input start')
     article_mock.forEach(async (e) => {
         const title = e.title;
@@ -96,9 +92,11 @@ async function mock() {
     })
 
     await makeClose();
-}
+
+    makeClose();
+    }
 
 
-// main()
+main()
 
 // mock()

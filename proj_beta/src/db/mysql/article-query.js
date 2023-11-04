@@ -69,7 +69,7 @@ const get_articles_with_pagination = async (pageNum, pass_close = false) => {
             console.error(err);
         }
     } else {
-        console.log('pass_close')
+        // console.log('pass_close')
     }
 
 
@@ -98,7 +98,7 @@ const insert_into_article = async ( title, body, author_id, created_at, updated_
             }
         }, 
             function (error, results, fields) {
-                
+                return results;
             }
         );
     } catch (err) {
@@ -116,13 +116,92 @@ const insert_into_article = async ( title, body, author_id, created_at, updated_
         console.log('pass_close')
     }
 
-
     return result_value.insertId;
+}
+
+
+const delete_article = async ( article_id, pass_close = false ) => {
+    try {
+        var result = await makeConnection();
+        // console.log(result);
+    } catch (err) {
+        console.error(err);
+    }
+
+    try {
+        var result_value = await makeQuery({
+            sql: 'DELETE FROM `article` WHERE `id` = ?',
+            timeout: 40000, // 40s
+            values: [article_id]
+        }, 
+            function (error, results, fields) {
+                return results;
+            }
+        );
+    } catch (err) {
+        console.error(err)
+    }
+
+    if (pass_close) {
+        try {
+            var result = await makeClose();
+            console.log(result);
+        } catch (err) {
+            console.error(err);
+        }
+    } else {
+        // console.log('pass_close')
+    }
+
+    return result_value.affectedRows;
+}
+
+
+const update_article = async ( article_id, title, body, updated_at, pass_close = false ) => {
+    try {
+        var result = await makeConnection();
+        // console.log(result);
+    } catch (err) {
+        console.error(err);
+    }
+
+    try {
+        var result_value = await makeQuery({
+            sql: 'UPDATE `article` SET ? WHERE `id` = ?',
+            timeout: 40000, // 40s
+            values: [{
+                title: `${title}`, 
+                body: `${body}`,
+                updated_at: `${updated_at}`
+            }, article_id]
+        }, 
+            function (error, results, fields) {
+                return results;
+            }
+        );
+    } catch (err) {
+        console.error(err)
+    }
+
+    if (pass_close) {
+        try {
+            var result = await makeClose();
+            console.log(result);
+        } catch (err) {
+            console.error(err);
+        }
+    } else {
+        console.log('pass_close')
+    }
+
+    return result_value.changedRows;
 }
 
 
 module.exports = {
     get_article_by_id,
     get_articles_with_pagination,
-    insert_into_article
+    insert_into_article,
+    delete_article,
+    update_article
 }
