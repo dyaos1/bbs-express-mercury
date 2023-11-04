@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
+router.use(express.json()) // for parsing routerlication/json
+router.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
 const ArticleSet = require('../domain/ArticleSet')
+const Article = require('../domain/Article')
 
 router
     .route('/')
@@ -17,7 +21,7 @@ router
         
         const page_num = (req.query.page === undefined) ? 0 : Number(req.query.page)-1;
         const offset_page_num = (page_num > 0) ? page_num*10 : 0
-        await article_set.get(offset_page_num)
+        await article_set.get_by_article(offset_page_num)
 
         const url = `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}`
         const next = `${url}?page=${(page_num + 2).toString()}`
@@ -40,6 +44,22 @@ router
         }
 
         res.json(context);
+    })
+    .post(async (req, res) => {
+        console.log(req.body)
+        const title = req.body.title;
+        const body = req.body.body;
+
+        const article = new Article()
+        const result = await article.create(title, body)
+
+        // console.log(result)
+
+        const context = {
+            ...result
+        }
+
+        res.json(context)
     })
 
 module.exports = router;

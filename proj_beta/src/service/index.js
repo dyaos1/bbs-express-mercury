@@ -8,9 +8,9 @@ const comment = require('./comment');
 
 // middleware that is specific to this router
 router.use('/articles', articles);
-// router.use('/article', article);
-// router.use('/comments', comments);
-// router.use('/comment', comment);
+router.use('/article', article);
+router.use('/comments', comments);
+router.use('/comment', comment);
 
 // define the home page route
 router.get('/', (req, res) => {
