@@ -10,7 +10,7 @@ const data_init = require('../mock/mockaroo');
 app.use('/api', api)
 
 app.get('/', (req, res) => {
-  res.sendFile('게시판 만들기 #2.html', {'root': './documents/'});
+  res.sendFile('bbs_index2.html', {'root': './documents/'});
 })
 
 app.get('/dbinit', async (req, res) => {
