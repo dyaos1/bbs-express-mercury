@@ -1,0 +1,44 @@
+version: '2.20'
+services:
+  server:
+    image: bbs-express2
+    build: .
+    networks:
+      - proj-beta
+    depends_on:
+      host:
+        condition:
+          service_healthy
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/app
+    # command:
+    #   ['sh', './docker-entrypoint.sh']
+    restart: always
+
+  host:
+    image: mysql
+    networks:
+      - proj-beta
+    expose:
+      - "3308"
+    restart: unless-stopped
+    ports: 
+      - 3308:3306
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: pass123#
+      MYSQL_DATABASE: bbs_express
+      MYSQL_ROOT_HOST: "%"
+
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 12s
+      retries: 10
+
+networks:
+  proj-beta:

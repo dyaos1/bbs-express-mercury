@@ -3,39 +3,7 @@ const {makeConnection, makeQuery, makeClose} = require('../src/db/mysql/mysql-pr
 const article_mock = require('./MOCK_DATA_A.json');
 const comment_mock = require('./MOCK_DATA_C.json');
 
-// let main = new Promise((resolve, reject) => {
-//         console.log('start')
-//         if (true) {
-//             resolve("start")
-//         } else {
-//             reject("fail")
-//         }
-//     })
-    // await db_promise(`DROP TABLE IF EXISTS comment`);
-
-    // await db_promise(`DROP TABLE IF EXISTS article`);
-
-    // await db_promise(`CREATE TABLE article(
-    //     id          INT         NOT NULL       AUTO_INCREMENT,
-    //     title       VARCHAR(50) NOT NULL,
-    //     body        TEXT        NOT NULL,
-    //     author_id   INT         NOT NULL,
-    //     created_at  DATETIME    DEFAULT CURRENT_TIMESTAMP,
-    //     updated_at  DATETIME    DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    //     PRIMARY KEY (id)
-    // )`);
-    
-    // await db_promise(`CREATE TABLE comment(
-    //     id          INT         NOT NULL        AUTO_INCREMENT,
-    //     content     VARCHAR(200)   NOT NULL,
-    //     article_id  INT         NOT NULL,
-    //     created_at  DATETIME    DEFAULT CURRENT_TIMESTAMP,
-    //     updated_at  DATETIME    DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    //     PRIMARY KEY (id), 
-    //     FOREIGN KEY (article_id) REFERENCES article(id) ON DELETE CASCADE
-    // )`);
-
-async function main() {
+async function data_init() {
     console.log('drop comment')
     var result1 = await makeQuery(`DROP TABLE IF EXISTS comment`)
     console.log(result1)
@@ -91,12 +59,10 @@ async function main() {
         console.log(result);
     })
 
-    await makeClose();
-
-    makeClose();
+    // await makeClose();
     }
 
 
-main()
+module.exports = data_init
 
 // mock()

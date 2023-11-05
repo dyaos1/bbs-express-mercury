@@ -1,12 +1,12 @@
 const mysql = require('mysql')
 
 const connection = mysql.createConnection({
-  host: 'localhost',
+  host: 'host.docker.internal',
+  port: '3308',
   user: 'root',
-  password: 'tkffkels4854',
+  password: 'pass123#',
   database: 'bbs_express'
 })
-
 
 const makeConnection = () => {
   return new Promise((resolve, reject) => {

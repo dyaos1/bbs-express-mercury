@@ -13,6 +13,7 @@ const ArticleSet = class {
         this.article_list = result;
 
         const [result_count] = await get_count('article');
+
         this.count = result_count['COUNT(*)'];
 
         return this;
