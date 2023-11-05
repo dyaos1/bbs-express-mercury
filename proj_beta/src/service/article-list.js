@@ -21,7 +21,7 @@ router
         
         const page_num = (req.query.page === undefined) ? 0 : Number(req.query.page)-1;
         const offset_page_num = (page_num > 0) ? page_num*10 : 0
-        await article_set.get_by_article(offset_page_num)
+        await article_set.get(offset_page_num)
 
         const url = `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}`
         const next = `${url}?page=${(page_num + 2).toString()}`
