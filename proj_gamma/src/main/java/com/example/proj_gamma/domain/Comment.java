@@ -10,12 +10,12 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+//@Table(indexes = {
+//        @Index(columnList = "content"),
+//        @Index(columnList = "created_at"),
+//        @Index(columnList = "created_by"),
+//})
 @Getter
-@Table(indexes = {
-        @Index(columnList = "content"),
-        @Index(columnList = "created_at"),
-        @Index(columnList = "created_by"),
-})
 @Entity
 public class Comment {
     @Id
@@ -26,27 +26,23 @@ public class Comment {
     @Column(nullable = false)
     private String content;
 
-    @CreatedDate
-    @Column(nullable = false)
-    private LocalDateTime created_at;
-
-    @CreatedBy
-    @Column(nullable = false)
-    private String created_by;
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime updated_at;
+//    @CreatedDate
+//    @Column(nullable = false)
+//    private LocalDateTime created_at;
+//
+//    @CreatedBy
+//    @Column(nullable = false)
+//    private String created_by;
+//
+//    @LastModifiedDate
+//    @Column(nullable = false)
+//    private LocalDateTime updated_at;
 
     protected Comment() {
     }
 
-    private Comment(String content) {
+    public Comment(String content) {
         this.content = content;
-    }
-
-    public static Comment of(String content) {
-        return new Comment(content);
     }
 
     @Override
@@ -67,9 +63,6 @@ public class Comment {
         return "Comment{" +
                 "id=" + id +
                 ", content='" + content + '\'' +
-                ", created_at=" + created_at +
-                ", created_by='" + created_by + '\'' +
-                ", updated_at=" + updated_at +
                 '}';
     }
 }
